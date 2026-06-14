@@ -4,6 +4,9 @@
 *.out
 main
 
+# CGO build artifacts
+_obj/
+
 # IDE
 .idea/
 .vscode/
@@ -11,3 +14,6 @@ main
 
 # OS
 .DS_Store
+
+# Test artifacts
+books.json
