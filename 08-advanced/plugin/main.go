@@ -236,7 +236,7 @@ func main() {
 	// ====================================================
 	fmt.Println("\n--- 方案A: 原生 Go Plugin（buildmode=plugin）---")
 
-	fmt.Println(`
+	fmt.Print(`
 编译原生插件的步骤：
   $ mkdir -p math_plugin text_plugin
 
@@ -362,7 +362,7 @@ func main() {
 	fmt.Println("\n========================================")
 	fmt.Println("  Plugin 设计选择总结")
 	fmt.Println("========================================")
-	fmt.Println(`
+	fmt.Print(`
 1. 原生 plugin（buildmode=plugin）
    ✅ 热加载，无需重启
    ✅ 第三方独立开发

@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	fmt.Println("=== Go 控制流综合演示 ===\n")
+	fmt.Println("=== Go 控制流综合演示 ===")
 
 	// ============================================================
 	// 1. if — 支持初始化语句
@@ -213,6 +213,148 @@ failure:
 
 cleanup:
 	fmt.Println("🧹 清理资源... 演示结束")
+}
+
+// ============================================================
+// 测试辅助函数 — 供 main_test.go 调用
+// ============================================================
+
+// ClassifyScore 根据分数返回等级，用于测试 if-else 逻辑
+func ClassifyScore(score int) string {
+	switch {
+	case score >= 90:
+		return "优秀"
+	case score >= 80:
+		return "良好"
+	case score >= 60:
+		return "及格"
+	default:
+		return "不及格"
+	}
+}
+
+// IsWeekend 判断 weekday 是否为周末，用于测试 switch 表达式
+func IsWeekend(day time.Weekday) bool {
+	switch day {
+	case time.Saturday, time.Sunday:
+		return true
+	default:
+		return false
+	}
+}
+
+// SumRange 对 1 到 n 的整数求和，用于测试 for 循环
+func SumRange(n int) int {
+	sum := 0
+	for i := 1; i <= n; i++ {
+		sum += i
+	}
+	return sum
+}
+
+// DoubleUntilLimit 将 n 不断加倍直到超过 limit，返回最终值
+func DoubleUntilLimit(n, limit int) int {
+	for n < limit {
+		n *= 2
+	}
+	return n
+}
+
+// LoopWithBreak 执行 count 次循环后 break，返回实际执行的次数
+func LoopWithBreak(maxCount int) int {
+	count := 0
+	for {
+		count++
+		if count > maxCount {
+			break
+		}
+	}
+	return count
+}
+
+// FilterEvens 返回 1 到 n 之间的所有偶数，用于测试 continue
+func FilterEvens(n int) []int {
+	var evens []int
+	for i := 1; i <= n; i++ {
+		if i%2 != 0 {
+			continue
+		}
+		evens = append(evens, i)
+	}
+	return evens
+}
+
+// RangeSum 对 slice 中的元素求和，用于测试 for range
+func RangeSum(nums []int) int {
+	sum := 0
+	for _, v := range nums {
+		sum += v
+	}
+	return sum
+}
+
+// MapKeysRange 返回 map 的所有 key，用于测试 map 遍历
+func MapKeysRange(m map[string]int) []string {
+	var keys []string
+	for k := range m {
+		keys = append(keys, k)
+	}
+	return keys
+}
+
+// CountRunes 统计字符串中的 rune 数量，用于测试字符串 range 遍历
+func CountRunes(s string) int {
+	count := 0
+	for range s {
+		count++
+	}
+	return count
+}
+
+// ChannelReceive 从 channel 接收所有消息并返回，用于测试 channel range
+func ChannelReceive(messages []string) []string {
+	ch := make(chan string, len(messages))
+	go func() {
+		for _, m := range messages {
+			ch <- m
+		}
+		close(ch)
+	}()
+	var received []string
+	for msg := range ch {
+		received = append(received, msg)
+	}
+	return received
+}
+
+// SwitchFallthrough 演示 switch fallthrough 行为
+func SwitchFallthrough(num int) []string {
+	var results []string
+	switch num {
+	case 1:
+		results = append(results, "case 1")
+	case 2:
+		results = append(results, "case 2")
+		fallthrough
+	case 3:
+		results = append(results, "case 3")
+	default:
+		results = append(results, "default")
+	}
+	return results
+}
+
+// GotoSuccess 模拟 goto 跳转到成功标签
+func GotoSuccess() string {
+	retries := 3
+	for i := 0; i < retries; i++ {
+		if i == 0 {
+			goto success
+		}
+	}
+	return "失败"
+success:
+	return "成功"
 }
 
 // init 在 main 之前自动执行

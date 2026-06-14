@@ -244,6 +244,10 @@ func TimeoutMiddleware(timeout time.Duration) func(http.Handler) http.Handler {
 			r = r.WithContext(ctx)
 
 			// 创建一个 channel 来接收 handler 完成信号
+			//
+			// 注意：当超时发生后，goroutine 仍在运行，可能会尝试写入响应。
+			// 在生产环境中，应使用 http.CloseNotifier 或在 handler 中检查 ctx.Done()
+			// 来避免这种竞态。此处为教学演示保持简洁。
 			done := make(chan struct{})
 			go func() {
 				next.ServeHTTP(w, r)

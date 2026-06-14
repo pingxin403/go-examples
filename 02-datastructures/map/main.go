@@ -6,6 +6,95 @@ import (
 	"strings"
 )
 
+// ============================================================
+// 可测试的 Helper 函数（供测试文件调用）
+// ============================================================
+
+// MapPut 向 map 中写入 key-value，返回旧值（如有）和是否已存在
+func MapPut(m map[string]int, key string, val int) (oldVal int, exists bool) {
+	oldVal, exists = m[key]
+	m[key] = val
+	return
+}
+
+// MapGet 从 map 中读取值，使用 comma-ok 惯用法
+func MapGet(m map[string]int, key string) (int, bool) {
+	v, ok := m[key]
+	return v, ok
+}
+
+// MapDelete 从 map 中删除 key，返回删除前是否存在
+func MapDelete(m map[string]int, key string) bool {
+	_, ok := m[key]
+	delete(m, key)
+	return ok
+}
+
+// MapKeys 返回 map 中所有 key 的已排序切片
+func MapKeys(m map[string]int) []string {
+	keys := make([]string, 0, len(m))
+	for k := range m {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	return keys
+}
+
+// NewStringSet 创建一个基于 map[string]struct{} 的字符串集合
+func NewStringSet(items ...string) map[string]struct{} {
+	set := make(map[string]struct{})
+	for _, item := range items {
+		set[item] = struct{}{}
+	}
+	return set
+}
+
+// SetAdd 向集合中添加元素，返回添加前是否已存在
+func SetAdd(set map[string]struct{}, item string) bool {
+	_, exists := set[item]
+	set[item] = struct{}{}
+	return exists
+}
+
+// SetHas 检查集合中是否包含指定元素
+func SetHas(set map[string]struct{}, item string) bool {
+	_, ok := set[item]
+	return ok
+}
+
+// SetRemove 从集合中移除元素，返回移除前是否存在
+func SetRemove(set map[string]struct{}, item string) bool {
+	_, ok := set[item]
+	delete(set, item)
+	return ok
+}
+
+// SetItems 返回集合中所有元素的切片
+func SetItems(set map[string]struct{}) []string {
+	items := make([]string, 0, len(set))
+	for k := range set {
+		items = append(items, k)
+	}
+	return items
+}
+
+// WordTokenize 将文本按非字母数字字符分割为单词切片
+func WordTokenize(text string) []string {
+	return strings.FieldsFunc(text, func(r rune) bool {
+		return !('a' <= r && r <= 'z') && !('0' <= r && r <= '9')
+	})
+}
+
+// WordFreq 统计单词频率，返回 map[string]int
+func WordFreq(text string) map[string]int {
+	words := WordTokenize(strings.ToLower(text))
+	freq := make(map[string]int)
+	for _, w := range words {
+		freq[w]++
+	}
+	return freq
+}
+
 // ------------------------------------------------------------
 // 1. Map 创建与 CRUD
 // ------------------------------------------------------------

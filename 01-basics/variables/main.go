@@ -129,8 +129,8 @@ func main() {
 
 	// int → string（注意：这是 Unicode 码点，不是数字字符串）
 	var codePoint int = 65 // 'A' 的 ASCII
-	char := string(codePoint)
-	fmt.Printf("int=%d → string=%q\n", codePoint, char)
+	char := string(rune(codePoint))
+	fmt.Printf("int=%d → string(rune)=%q\n", codePoint, char)
 
 	// 正确的数字→字符串转换需要使用 strconv, 但这里用简单方式
 	// 使用 fmt.Sprintf
@@ -178,6 +178,67 @@ func main() {
 // 辅助：除法，返回商和余数
 func divide(a, b int) (int, int) {
 	return a / b, a % b
+}
+
+// ============================================================
+// 测试辅助函数 — 供 main_test.go 调用
+// ============================================================
+
+// GetZeroValues 返回所有零值的字符串表示，用于测试零值行为
+func GetZeroValues() map[string]string {
+	return map[string]string{
+		"int":     fmt.Sprintf("%d", zeroInt),
+		"float64": fmt.Sprintf("%f", zeroFloat),
+		"bool":    fmt.Sprintf("%t", zeroBool),
+		"string":  fmt.Sprintf("%q", zeroString),
+	}
+}
+
+// DemonstrateConversions 执行类型转换并返回关键结果
+func DemonstrateConversions() map[string]string {
+	result := make(map[string]string)
+	var intVal int = 42
+	result["int_to_float"] = fmt.Sprintf("%.1f", float64(intVal))
+
+	var piFloat float64 = 3.1415926
+	result["float_to_int"] = fmt.Sprintf("%d", int(piFloat))
+
+	result["rune_to_string"] = fmt.Sprintf("%q", string(rune(65)))
+	return result
+}
+
+// GetIotaConstants 返回 iota 枚举常量值，用于验证 iota 行为
+func GetIotaConstants() map[string]int {
+	return map[string]int{
+		"StatusPending":  StatusPending,
+		"StatusActive":   StatusActive,
+		"StatusInactive": StatusInactive,
+		"StatusDeleted":  StatusDeleted,
+	}
+}
+
+// GetPermissionFlags 返回权限位标志值，用于验证位运算
+func GetPermissionFlags() map[string]int {
+	return map[string]int{
+		"Read":    Read,
+		"Write":   Write,
+		"Execute": Execute,
+	}
+}
+
+// SwapValues 交换两个整数的值（通过指针），用于测试多重赋值
+func SwapValues(a, b int) (int, int) {
+	return b, a
+}
+
+// Divide 公开的除法函数，用于测试多返回值
+func Divide(a, b int) (int, int) {
+	return divide(a, b)
+}
+
+// IsCamelCase 公开版 isCamelCase，用于测试
+func IsCamelCase(s string) bool {
+	return isCamelCase(s)
 }
 
 // 辅助：检查命名是否符合驼峰（仅演示用）

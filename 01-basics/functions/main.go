@@ -194,6 +194,23 @@ func safeDiv(a, b int) (int, error) {
 	return a / b, nil
 }
 
+// CheckClosureTrap 演示 Go 1.22+ 的循环变量捕获修复
+// 返回 [1, 2, 3] 表示正确捕获了每次迭代的 i
+func CheckClosureTrap() []int {
+	var funcs []func() int
+	for i := 1; i <= 3; i++ {
+		i := i
+		funcs = append(funcs, func() int {
+			return i
+		})
+	}
+	result := make([]int, len(funcs))
+	for i, f := range funcs {
+		result[i] = f()
+	}
+	return result
+}
+
 func main() {
 	// ============================================================
 	// 1. 多返回值

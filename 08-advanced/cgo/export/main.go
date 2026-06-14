@@ -159,7 +159,7 @@ func main() {
 	// ====================================================
 	fmt.Println("\n--- 2. //export 函数说明 ---")
 
-	fmt.Println(`
+	println(`
   下面的 Go 函数通过 //export 导出为 C 符号，
   编译为共享库后，纯 C 程序即可直接调用：
 
@@ -182,7 +182,7 @@ func main() {
     #include "libexport.h"
     int main() {
         Person p = {"Bob", 25, 88.5};
-        goGreetPerson(&p);       // 调用 Go 函数
+        goGreetPerson(&p);
 
         int result = goDouble(21);
         printf("goDouble(21) = %d\n", result);
@@ -199,7 +199,7 @@ func main() {
 	// ====================================================
 	fmt.Println("--- 3. 构建和链接说明 ---")
 
-	fmt.Println(`
+	fmt.Print(`
   构建 C 可调用的共享库：
 
   # 编译
@@ -225,7 +225,7 @@ func main() {
 	fmt.Println("\n================================================")
 	fmt.Println("  导出函数注意事项")
 	fmt.Println("================================================")
-	fmt.Println(`
+	fmt.Print(`
 导出函数的核心规则和常见错误：
 
   1. //export 位置

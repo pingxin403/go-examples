@@ -297,6 +297,16 @@ func demoUserValidation() {
 	}
 }
 
+// NewPerson 创建并返回一个 Person 指针（工厂函数）
+func NewPerson(name string, age int) *Person {
+	return &Person{Name: name, Age: age}
+}
+
+// NewRectangle 创建并返回一个 Rectangle（工厂函数）
+func NewRectangle(width, height float64) Rectangle {
+	return Rectangle{Width: width, Height: height}
+}
+
 // ------------------------------------------------------------
 // main
 // ------------------------------------------------------------

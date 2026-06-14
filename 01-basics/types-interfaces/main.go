@@ -229,14 +229,14 @@ func interfaceInternals() {
 }
 
 func main() {
-	fmt.Println("=== Go 接口与类型系统综合演示 ===\n")
+	fmt.Println("=== Go 接口与类型系统综合演示 ===")
 
 	// ============================================================
 	// 1. 接口定义与隐式实现
 	// ============================================================
 	fmt.Println("--- 接口定义与隐式实现 (Duck Typing) ---")
-	fmt.Println("Go 的接口是隐式满足的。类型不需要声明 implements，")
-	fmt.Println("只要实现了接口要求的所有方法，就自动满足该接口。\n")
+	fmt.Print("Go 的接口是隐式满足的。类型不需要声明 implements，")
+	fmt.Println("只要实现了接口要求的所有方法，就自动满足该接口。")
 
 	dog := Dog{Name: "旺财"}
 	cat := Cat{Name: "咪咪"}
@@ -248,7 +248,7 @@ func main() {
 	// 2. 多态 — 接口作为参数
 	// ============================================================
 	fmt.Println("\n--- 多态 ---")
-	fmt.Println("可以将不同的具体类型传递给同一个接口参数:\n")
+	fmt.Println("可以将不同的具体类型传递给同一个接口参数:")
 	makeSpeak(dog, cat, robot)
 
 	// 也可以放在 slice 里
@@ -262,7 +262,7 @@ func main() {
 	// 3. 空接口 / any
 	// ============================================================
 	fmt.Println("\n--- 空接口 / any ---")
-	fmt.Println("any 可以持有任何类型的值:\n")
+	fmt.Println("any 可以持有任何类型的值:")
 
 	describeAny(42)
 	describeAny("hello")
@@ -290,7 +290,7 @@ func main() {
 	// 5. 类型开关 (Type Switch)
 	// ============================================================
 	fmt.Println("\n--- Type Switch ---")
-	fmt.Println("类型开关可以区分接口值的具体类型:\n")
+	fmt.Println("类型开关可以区分接口值的具体类型:")
 
 	values := []any{42, 3.14, "hello", true, nil, dog}
 	for _, v := range values {
@@ -301,7 +301,7 @@ func main() {
 	// 6. 接口嵌入
 	// ============================================================
 	fmt.Println("\n--- 接口嵌入 ---")
-	fmt.Println("接口可以嵌入其他接口，组合多个接口的需求:\n")
+	fmt.Println("接口可以嵌入其他接口，组合多个接口的需求:")
 
 	file := SimulatedFile{Name: "data.txt"}
 	processFile(file)
@@ -310,7 +310,7 @@ func main() {
 	// 7. Stringer 接口实用示例
 	// ============================================================
 	fmt.Println("\n--- Stringer 接口实用示例 ---")
-	fmt.Println("实现 fmt.Stringer 接口可以自定义类型的打印格式:\n")
+	fmt.Println("实现 fmt.Stringer 接口可以自定义类型的打印格式:")
 
 	// Person 实现了 Stringer
 	p := Person{FirstName: "小明", LastName: "张", Age: 28}
@@ -373,6 +373,6 @@ func main() {
 	// 类型转换 int → string（不是接口相关，但常见混淆）
 	// 这会将整数解释为 Unicode 码点
 	_ = strconv.Itoa(65) // 正确: "65"
-	s2 := string(65)     // 正确语法但结果不对: "A"（不是 "65"）
-	fmt.Printf("  注意: string(65) = %q (是 Unicode 码点，不是数字!)\n", s2)
+	s2 := string(rune(65)) // 正确语法: Unicode 码点 'A'
+	fmt.Printf("  注意: string(rune(65)) = %q (是 Unicode 码点，不是数字!)\n", s2)
 }

@@ -6,6 +6,131 @@ import (
 	"unicode/utf8"
 )
 
+// ============================================================
+// 可测试的 Helper 函数（供测试文件调用）
+// ============================================================
+
+// MakeSlice 使用 make 创建指定长度和容量的 int 切片并填充值
+func MakeSlice(length, capacity int, vals ...int) []int {
+	s := make([]int, length, capacity)
+	for i := 0; i < len(s) && i < len(vals); i++ {
+		s[i] = vals[i]
+	}
+	return s
+}
+
+// SliceLenCap 返回切片的长度和容量
+func SliceLenCap(s []int) (int, int) {
+	return len(s), cap(s)
+}
+
+// SubSlice 对切片执行切片表达式，返回指定范围的子切片
+func SubSlice(s []int, start, end int) []int {
+	if start < 0 || end > len(s) || start > end {
+		return nil
+	}
+	return s[start:end]
+}
+
+// AppendValues 向切片追加多个值，返回新切片以及追加后的 len 和 cap
+func AppendValues(s []int, vals ...int) ([]int, int, int) {
+	result := append(s, vals...)
+	return result, len(result), cap(result)
+}
+
+// CopySlice 复制 src 到目标切片并返回复制元素个数
+func CopySlice(dst, src []int) int {
+	return copy(dst, src)
+}
+
+// RemoveIndex 删除切片中指定索引的元素（保持顺序）
+func RemoveIndex(s []int, idx int) ([]int, bool) {
+	if idx < 0 || idx >= len(s) {
+		return s, false
+	}
+	return append(s[:idx], s[idx+1:]...), true
+}
+
+// RemoveIndexFast 删除切片中指定索引的元素（不保持顺序，速度快）
+func RemoveIndexFast(s []int, idx int) ([]int, bool) {
+	if idx < 0 || idx >= len(s) {
+		return s, false
+	}
+	s[idx] = s[len(s)-1]
+	return s[:len(s)-1], true
+}
+
+// InsertValue 在切片指定位置插入一个值
+func InsertValue(s []int, idx, val int) ([]int, bool) {
+	if idx < 0 || idx > len(s) {
+		return s, false
+	}
+	result := append(s[:idx], append([]int{val}, s[idx:]...)...)
+	return result, true
+}
+
+// FilterEven 过滤出切片中的偶数（原地过滤，返回子切片）
+func FilterEven(s []int) []int {
+	filtered := s[:0]
+	for _, v := range s {
+		if v%2 == 0 {
+			filtered = append(filtered, v)
+		}
+	}
+	return filtered
+}
+
+// ReverseSlice 原地反转切片
+func ReverseSlice(s []int) {
+	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
+		s[i], s[j] = s[j], s[i]
+	}
+}
+
+// RuneCount 返回字符串的字符（rune）数
+func RuneCount(s string) int {
+	return utf8.RuneCountInString(s)
+}
+
+// ByteLen 返回字符串的字节数
+func ByteLen(s string) int {
+	return len(s)
+}
+
+// ConcatWithPlus 使用 + 操作符拼接字符串
+func ConcatWithParts(parts ...string) string {
+	result := ""
+	for i, p := range parts {
+		if i > 0 {
+			result += ", "
+		}
+		result += p
+	}
+	return result
+}
+
+// ConcatWithBuilder 使用 strings.Builder 高效拼接字符串
+func ConcatWithBuilder(parts ...string) string {
+	var sb strings.Builder
+	for i, p := range parts {
+		if i > 0 {
+			sb.WriteString(", ")
+		}
+		sb.WriteString(p)
+	}
+	return sb.String()
+}
+
+// ToBytes 将字符串转为 []byte
+func ToBytes(s string) []byte {
+	return []byte(s)
+}
+
+// ToRunes 将字符串转为 []rune
+func ToRunes(s string) []rune {
+	return []rune(s)
+}
+
 // ------------------------------------------------------------
 // 1. 切片（Slice）基础操作
 // ------------------------------------------------------------

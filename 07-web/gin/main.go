@@ -20,6 +20,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"sync"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -48,6 +49,7 @@ var (
 	users    = map[uint]User{}
 	articles = map[uint]Article{}
 	nextID   = uint(1)
+	mu       sync.Mutex // 保护 users/articles/nextID 的并发访问
 )
 
 func init() {
@@ -101,6 +103,7 @@ func AuthMiddleware() gin.HandlerFunc {
 
 // listUsers 获取所有用户 (GET /api/users)
 func listUsers(c *gin.Context) {
+	mu.Lock()
 	var userList []User
 	for _, u := range users {
 		userList = append(userList, u)
@@ -109,6 +112,7 @@ func listUsers(c *gin.Context) {
 		"count": len(userList),
 		"data":  userList,
 	})
+	mu.Unlock()
 }
 
 // getUserByID 根据 ID 获取单个用户 (GET /api/users/:id)
@@ -120,7 +124,9 @@ func getUserByID(c *gin.Context) {
 		return
 	}
 
+	mu.Lock()
 	user, ok := users[uid]
+	mu.Unlock()
 	if !ok {
 		c.JSON(http.StatusNotFound, gin.H{"error": "用户不存在"})
 		return
@@ -141,9 +147,11 @@ func createUser(c *gin.Context) {
 		return
 	}
 
+	mu.Lock()
 	newUser.ID = nextID
 	nextID++
 	users[newUser.ID] = newUser
+	mu.Unlock()
 
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "用户创建成功",
@@ -160,10 +168,13 @@ func updateUser(c *gin.Context) {
 		return
 	}
 
+	mu.Lock()
 	if _, ok := users[uid]; !ok {
+		mu.Unlock()
 		c.JSON(http.StatusNotFound, gin.H{"error": "用户不存在"})
 		return
 	}
+	mu.Unlock()
 
 	var updatedUser User
 	if err := c.ShouldBindJSON(&updatedUser); err != nil {
@@ -174,8 +185,10 @@ func updateUser(c *gin.Context) {
 		return
 	}
 
+	mu.Lock()
 	updatedUser.ID = uid
 	users[uid] = updatedUser
+	mu.Unlock()
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "用户更新成功",
@@ -192,12 +205,15 @@ func deleteUser(c *gin.Context) {
 		return
 	}
 
+	mu.Lock()
 	if _, ok := users[uid]; !ok {
+		mu.Unlock()
 		c.JSON(http.StatusNotFound, gin.H{"error": "用户不存在"})
 		return
 	}
 
 	delete(users, uid)
+	mu.Unlock()
 	c.JSON(http.StatusOK, gin.H{
 		"message": fmt.Sprintf("用户 %d 已删除", uid),
 	})
@@ -211,6 +227,7 @@ func searchUsers(c *gin.Context) {
 	var minAge int
 	fmt.Sscanf(minAgeStr, "%d", &minAge)
 
+	mu.Lock()
 	var results []User
 	for _, u := range users {
 		if name != "" && u.Username != name {
@@ -221,6 +238,7 @@ func searchUsers(c *gin.Context) {
 		}
 		results = append(results, u)
 	}
+	mu.Unlock()
 
 	c.JSON(http.StatusOK, gin.H{
 		"count": len(results),
