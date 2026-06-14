@@ -1,0 +1,13 @@
+# Compiled binaries
+*.exe
+*.test
+*.out
+main
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store

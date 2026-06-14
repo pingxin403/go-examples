@@ -1,0 +1,36 @@
+// hello.proto — gRPC HelloService 定义
+//
+// 本文件定义了一个简单的问候服务，包含基本的 RPC 调用。
+//
+// 生成 Go 代码:
+//   cd 07-web/grpc
+//   protoc --go_out=. --go-grpc_out=. proto/hello.proto
+//
+// 安装 protoc 和 Go 插件:
+//   go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+//   go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+
+syntax = "proto3";
+
+package hello;
+
+option go_package = "github.com/pingxin403/go-examples/07-web/grpc/proto";
+
+// HelloService 问候服务
+service HelloService {
+  // SayHello 简单 RPC：发送名字，接收问候语
+  rpc SayHello (HelloRequest) returns (HelloResponse);
+
+  // SayHelloStream 服务端流式 RPC：发送名字，接收多条问候语
+  rpc SayHelloStream (HelloRequest) returns (stream HelloResponse);
+}
+
+// HelloRequest 问候请求
+message HelloRequest {
+  string name = 1;  // 用户名
+}
+
+// HelloResponse 问候响应
+message HelloResponse {
+  string message = 1;  // 问候消息
+}
